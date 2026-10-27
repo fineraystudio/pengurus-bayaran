@@ -348,7 +348,7 @@ async function main() {
                 };
             })()`);
 
-            const appUrl = 'https://faridrameli.github.io/pengurus-bayaran/';
+            const appUrl = 'https://fineraystudio.github.io/pengurus-bayaran/';
             assert.equal(seo.canonical, appUrl);
             assert.equal(seo.ogUrl, appUrl);
             assert.equal(seo.ogLocale, 'ms_MY');

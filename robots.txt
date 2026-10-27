@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://faridrameli.github.io/pengurus-bayaran/sitemap.xml
+Sitemap: https://fineraystudio.github.io/pengurus-bayaran/sitemap.xml
