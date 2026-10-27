@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://faridrameli.github.io/pengurus-bayaran/sitemap.xml

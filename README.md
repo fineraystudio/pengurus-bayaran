@@ -19,6 +19,7 @@ Eksport dan import fail JSON membolehkan anda membuat salinan sandaran atau berp
 - **Eksport / import JSON** — sandaran dan pindah peranti.
 - **Boleh dipasang (PWA)** — tambah ke skrin utama telefon; berfungsi luar talian selepas lawatan pertama.
 - **Ringan** — satu halaman, tiada rangka kerja, tiada penjejak.
+- **Privasi jelas** — [Dasar privasi](privasi.html) dalam Bahasa Melayu; tiada akaun, kuki atau analitik.
 
 ## Jalankan secara tempatan
 
@@ -40,6 +41,11 @@ Ujian unit meliputi logik data dalam `lib.js` (format RM, tapisan, susunan, ring
 komitmen bulanan, zakat dan penukaran tarikh Hijrah). Ujian hujung-ke-hujung memandu halaman sebenar:
 tambah/sunting/padam bayaran, tapis, susun, paparan dan tapisan Hijrah, bulan baharu, simpan merentas
 muat semula, eksport, import dan service worker.
+
+Langkah "Package" menambah semakan meta SEO/JSON-LD, halaman privasi, `robots.txt` dan `sitemap.xml`;
+ujian localStorage (tulis, muat semula, padam); serta ujian pemasangan PWA pada skrin mudah alih
+(390×844) — saiz ikon sebenar, `display: standalone`, `start_url` dalam skop, tiada limpahan mendatar,
+dan penilaian kebolehpasanan Chrome sendiri (`Page.getInstallabilityErrors`).
 
 Penukaran tarikh Hijrah menggunakan kalendar Umm al-Qura melalui `Intl` (dengan sandaran aritmetik
 tabular jika `Intl` tiada). Tarikh rasmi Malaysia (JAKIM) ditentukan melalui rukyah, jadi ia boleh
@@ -66,7 +72,9 @@ node tools/screenshots.mjs    # 3 tangkapan skrin
 
 | Fail | Tujuan |
 | --- | --- |
-| `index.html` | antara muka |
+| `index.html` | antara muka (meta SEO, Open Graph, JSON-LD) |
+| `privasi.html` | dasar privasi dalam Bahasa Melayu |
+| `robots.txt`, `sitemap.xml` | arahan enjin carian |
 | `styles.css` | gaya |
 | `lib.js` | logik data tulen (boleh diuji dengan Node) |
 | `app.js` | DOM, localStorage, PWA |

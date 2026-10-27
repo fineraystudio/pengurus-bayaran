@@ -318,6 +318,84 @@ async function main() {
             assert.deepEqual(info.forbidden, [], 'Teks Inggeris tertinggal: ' + info.forbidden.join(', '));
         });
 
+        step('Meta SEO, JSON-LD dan halaman privasi lengkap', async () => {
+            const seo = await evaluate(`(async () => {
+                const meta = (name) => document.querySelector('meta[name="' + name + '"]')?.content || '';
+                const prop = (name) => document.querySelector('meta[property="' + name + '"]')?.content || '';
+                const ld = Array.from(document.querySelectorAll('script[type="application/ld+json"]'))
+                    .map((script) => {
+                        try { return JSON.parse(script.textContent); } catch { return null; }
+                    });
+                const [privacy, robots, sitemap] = await Promise.all(
+                    ['privasi.html', 'robots.txt', 'sitemap.xml'].map((path) =>
+                        fetch(path).then(async (response) => ({ status: response.status, text: await response.text() })))
+                );
+                return {
+                    description: meta('description'),
+                    keywords: meta('keywords'),
+                    robots: meta('robots'),
+                    canonical: document.querySelector('link[rel="canonical"]')?.href || '',
+                    ogUrl: prop('og:url'),
+                    ogLocale: prop('og:locale'),
+                    ogImage: prop('og:image'),
+                    ogImageAlt: prop('og:image:alt'),
+                    twitterImage: meta('twitter:image'),
+                    footerPrivacy: document.querySelector('.footer a[href="privasi.html"]')?.textContent.trim() || '',
+                    ld,
+                    privacy,
+                    robotsFile: robots,
+                    sitemap
+                };
+            })()`);
+
+            const appUrl = 'https://faridrameli.github.io/pengurus-bayaran/';
+            assert.equal(seo.canonical, appUrl);
+            assert.equal(seo.ogUrl, appUrl);
+            assert.equal(seo.ogLocale, 'ms_MY');
+            assert.equal(seo.ogImage, `${appUrl}social/og-card.png`);
+            assert.equal(seo.twitterImage, `${appUrl}social/og-card.png`);
+            assert.match(seo.ogImageAlt, /Pengurus Bayaran/);
+            assert.match(seo.description, /kalkulator zakat/i);
+            assert.equal(seo.robots, 'index, follow');
+            for (const keyword of ['pengurus bayaran', 'rekod bayaran bulanan', 'kalkulator zakat', 'kalendar hijrah']) {
+                assert.ok(seo.keywords.toLowerCase().includes(keyword), `kata kunci hilang: ${keyword}`);
+            }
+            assert.equal(seo.footerPrivacy, 'Dasar privasi');
+
+            const app = seo.ld.find((entry) => entry && entry['@type'] === 'SoftwareApplication');
+            assert.ok(app, 'JSON-LD SoftwareApplication diperlukan');
+            assert.equal(app.url, appUrl);
+            assert.equal(app.inLanguage, 'ms-MY');
+            assert.equal(app.offers.price, '0');
+            assert.equal(app.offers.priceCurrency, 'MYR');
+            assert.ok(app.featureList.some((feature) => /zakat/i.test(feature)));
+
+            assert.equal(seo.privacy.status, 200);
+            for (const phrase of ['Dasar Privasi', 'localStorage', 'pengurusBayaranData_v1',
+                'Tiada', '91trillionaire@gmail.com', 'Kembali ke Pengurus Bayaran']) {
+                assert.ok(seo.privacy.text.includes(phrase), `halaman privasi tiada: ${phrase}`);
+            }
+            assert.match(seo.privacy.text, /<html lang="ms">/);
+
+            assert.equal(seo.robotsFile.status, 200);
+            assert.match(seo.robotsFile.text, new RegExp(`Sitemap: ${appUrl}sitemap\\.xml`));
+
+            assert.equal(seo.sitemap.status, 200);
+            const urls = await evaluate(`(() => {
+                const doc = new DOMParser().parseFromString(${JSON.stringify(seo.sitemap.text)}, 'application/xml');
+                return Array.from(doc.querySelectorAll('url > loc')).map((node) => node.textContent.trim());
+            })()`);
+            assert.deepEqual(urls, [appUrl, `${appUrl}privasi.html`]);
+
+            const ogCard = await evaluate(`new Promise((resolve) => {
+                const image = new Image();
+                image.onload = () => resolve({ width: image.naturalWidth, height: image.naturalHeight });
+                image.onerror = () => resolve({ error: true });
+                image.src = 'social/og-card.png';
+            })`);
+            assert.deepEqual(ogCard, { width: 1200, height: 630 });
+        });
+
         step('Tambah bayaran melalui borang', async () => {
             const result = await evaluate(`(() => {
                 window.__t.clickButton('Tambah Bayaran');
@@ -651,6 +729,68 @@ async function main() {
             assert.equal(Object.keys(result.stored).length, 2);
         });
 
+        step('localStorage menulis, mengemas kini dan memadam dengan betul', async () => {
+            const before = await evaluate(`(() => {
+                const raw = localStorage.getItem(window.__t.storageKey);
+                const data = raw ? JSON.parse(raw) : null;
+                return {
+                    key: window.__t.storageKey,
+                    hasKey: raw !== null,
+                    isObject: data !== null && typeof data === 'object',
+                    storageKeys: Object.keys(localStorage)
+                };
+            })()`);
+            assert.equal(before.key, 'pengurusBayaranData_v1');
+            assert.equal(before.hasKey, true);
+            assert.equal(before.isObject, true);
+            assert.deepEqual(before.storageKeys, ['pengurusBayaranData_v1'], 'Tiada data lain disimpan');
+
+            const added = await evaluate(`(() => {
+                const saved = window.__t.addPayment({
+                    title: 'Ujian Simpanan', amount: 12.34, date: '2026-10-20', type: 'extra', paid: false
+                });
+                const data = JSON.parse(localStorage.getItem(window.__t.storageKey));
+                return {
+                    saved,
+                    inStorage: JSON.stringify(data).includes('Ujian Simpanan'),
+                    inDom: !!window.__t.itemByTitle('Ujian Simpanan')
+                };
+            })()`);
+            assert.equal(added.saved, true);
+            assert.equal(added.inStorage, true);
+            assert.equal(added.inDom, true);
+
+            await cdp.send('Page.reload');
+            await waitForApp();
+            const reloaded = await waitFor(async () => {
+                const state = await evaluate(`(() => ({
+                    inStorage: JSON.stringify(JSON.parse(localStorage.getItem(window.__t.storageKey) || '{}')).includes('Ujian Simpanan'),
+                    inDom: !!window.__t.itemByTitle('Ujian Simpanan')
+                }))()`);
+                return state.inDom ? state : null;
+            }, 'rekod ujian selepas muat semula');
+            assert.deepEqual(reloaded, { inStorage: true, inDom: true });
+
+            // Padam melalui UI; data mesti hilang daripada skrin dan localStorage selepas muat semula.
+            await evaluate(`(() => {
+                const originalConfirm = window.confirm;
+                window.confirm = () => true;
+                const button = document.querySelector('.payment-item button[aria-label="Padam Ujian Simpanan"]');
+                if (!button) throw new Error('Butang padam tidak dijumpai');
+                button.click();
+                window.confirm = originalConfirm;
+                return true;
+            })()`);
+            await sleep(150);
+            await cdp.send('Page.reload');
+            await waitForApp();
+            const removed = await evaluate(`(() => ({
+                inStorage: JSON.stringify(JSON.parse(localStorage.getItem(window.__t.storageKey) || '{}')).includes('Ujian Simpanan'),
+                inDom: !!window.__t.itemByTitle('Ujian Simpanan')
+            }))()`);
+            assert.deepEqual(removed, { inStorage: false, inDom: false });
+        });
+
         step('Eksport menghasilkan fail JSON yang lengkap', async () => {
             const result = await evaluate(`(async () => {
                 window.__dl = {};
@@ -782,10 +922,82 @@ async function main() {
             assert.match(sw.scope, new RegExp(`127\\.0\\.0\\.1:${httpPort}`));
 
             // Aset penting mesti boleh diambil (cache shell).
-            const assets = await evaluate(`Promise.all(['index.html', 'styles.css', 'lib.js', 'app.js', 'manifest.json', 'icons/icon-192.png',
+            const assets = await evaluate(`Promise.all(['index.html', 'privasi.html', 'styles.css', 'lib.js', 'app.js', 'manifest.json', 'icons/icon-192.png',
                 'icons/icon.svg', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'social/og-card.png']
                 .map((path) => fetch(path).then((r) => r.status)))`);
-            assert.deepEqual(assets, [200, 200, 200, 200, 200, 200, 200, 200, 200, 200]);
+            assert.deepEqual(assets, [200, 200, 200, 200, 200, 200, 200, 200, 200, 200, 200]);
+        });
+
+        step('PWA boleh dipasang pada skrin mudah alih', async () => {
+            await cdp.send('Emulation.setDeviceMetricsOverride', {
+                width: 390, height: 844, deviceScaleFactor: 3, mobile: true
+            });
+            try {
+                await cdp.send('Page.reload');
+                await waitForApp();
+
+                const mobile = await evaluate(`(async () => {
+                    const manifest = await fetch('manifest.json').then((response) => response.json());
+                    const icons = await Promise.all(['icons/icon-192.png', 'icons/icon-512.png',
+                        'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'icons/favicon-32.png']
+                        .map((src) => new Promise((resolve) => {
+                            const image = new Image();
+                            image.onload = () => resolve({ src, width: image.naturalWidth, height: image.naturalHeight });
+                            image.onerror = () => resolve({ src, error: true });
+                            image.src = src;
+                        })));
+                    const registration = await navigator.serviceWorker.getRegistration();
+                    return {
+                        viewportWidth: window.innerWidth,
+                        scrollWidth: document.documentElement.scrollWidth,
+                        language: document.documentElement.lang,
+                        themeColor: document.querySelector('meta[name="theme-color"]')?.content,
+                        manifestHref: document.querySelector('link[rel="manifest"]')?.href,
+                        display: manifest.display,
+                        startUrl: new URL(manifest.start_url, location.href).href,
+                        scope: new URL(manifest.scope, location.href).href,
+                        hasMaskable: manifest.icons.some((icon) => icon.purpose === 'maskable'),
+                        icons,
+                        swActive: Boolean(registration && registration.active),
+                        swControlling: Boolean(navigator.serviceWorker.controller)
+                    };
+                })()`);
+
+                assert.equal(mobile.viewportWidth, 390);
+                assert.ok(mobile.scrollWidth <= mobile.viewportWidth,
+                    `limpahan mendatar pada 390px: ${mobile.scrollWidth} > ${mobile.viewportWidth}`);
+                assert.equal(mobile.language, 'ms');
+                assert.equal(mobile.themeColor, '#0e5c46');
+                assert.match(mobile.manifestHref, /manifest\.json$/);
+                assert.equal(mobile.display, 'standalone');
+                assert.ok(mobile.startUrl.startsWith(mobile.scope), 'start_url mesti dalam skop');
+                assert.equal(mobile.hasMaskable, true);
+                assert.equal(mobile.swActive, true);
+                assert.deepEqual(mobile.icons, [
+                    { src: 'icons/icon-192.png', width: 192, height: 192 },
+                    { src: 'icons/icon-512.png', width: 512, height: 512 },
+                    { src: 'icons/icon-maskable-512.png', width: 512, height: 512 },
+                    { src: 'icons/apple-touch-icon.png', width: 180, height: 180 },
+                    { src: 'icons/favicon-32.png', width: 32, height: 32 }
+                ]);
+
+                // Chrome sendiri menilai sama ada halaman ini boleh dipasang.
+                let installabilityErrors = null;
+                try {
+                    const result = await cdp.send('Page.getInstallabilityErrors');
+                    installabilityErrors = result.installabilityErrors;
+                } catch (error) {
+                    console.log(`   (Page.getInstallabilityErrors tidak tersedia: ${error.message})`);
+                }
+                if (installabilityErrors) {
+                    assert.deepEqual(installabilityErrors, [],
+                        'Chrome melaporkan ralat pemasangan: ' + JSON.stringify(installabilityErrors));
+                }
+            } finally {
+                await cdp.send('Emulation.clearDeviceMetricsOverride');
+                await cdp.send('Page.reload');
+                await waitForApp();
+            }
         });
 
         for (const { name, fn } of steps) {
