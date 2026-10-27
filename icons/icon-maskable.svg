@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 512 512" role="img" aria-label="Pengurus Bayaran">
+    
+    <defs>
+        <radialGradient id="bg" cx="44%" cy="32%" r="82%">
+            <stop offset="0" stop-color="#15805F"/>
+            <stop offset="0.55" stop-color="#0E5C46"/>
+            <stop offset="1" stop-color="#07382A"/>
+        </radialGradient>
+        <linearGradient id="gold" x1="0.1" y1="0" x2="0.9" y2="1">
+            <stop offset="0" stop-color="#F7E7AE"/>
+            <stop offset="0.35" stop-color="#D4AF37"/>
+            <stop offset="0.7" stop-color="#A8821B"/>
+            <stop offset="1" stop-color="#E4C56A"/>
+        </linearGradient>
+        <linearGradient id="goldText" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFF0C2"/>
+            <stop offset="0.55" stop-color="#F3DD94"/>
+            <stop offset="1" stop-color="#D4AF37"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#02241A" flood-opacity="0.45"/>
+        </filter>
+    </defs>
+    
+    <rect width="512" height="512" fill="url(#bg)"/>
+    <g stroke="#F3DD94" stroke-opacity="0.055" stroke-width="1.5">
+        <line x1="-512" y1="0" x2="0" y2="512"/>
+        <line x1="-512" y1="512" x2="0" y2="0"/>
+        <line x1="-448" y1="0" x2="64" y2="512"/>
+        <line x1="-448" y1="512" x2="64" y2="0"/>
+        <line x1="-384" y1="0" x2="128" y2="512"/>
+        <line x1="-384" y1="512" x2="128" y2="0"/>
+        <line x1="-320" y1="0" x2="192" y2="512"/>
+        <line x1="-320" y1="512" x2="192" y2="0"/>
+        <line x1="-256" y1="0" x2="256" y2="512"/>
+        <line x1="-256" y1="512" x2="256" y2="0"/>
+        <line x1="-192" y1="0" x2="320" y2="512"/>
+        <line x1="-192" y1="512" x2="320" y2="0"/>
+        <line x1="-128" y1="0" x2="384" y2="512"/>
+        <line x1="-128" y1="512" x2="384" y2="0"/>
+        <line x1="-64" y1="0" x2="448" y2="512"/>
+        <line x1="-64" y1="512" x2="448" y2="0"/>
+        <line x1="0" y1="0" x2="512" y2="512"/>
+        <line x1="0" y1="512" x2="512" y2="0"/>
+        <line x1="64" y1="0" x2="576" y2="512"/>
+        <line x1="64" y1="512" x2="576" y2="0"/>
+        <line x1="128" y1="0" x2="640" y2="512"/>
+        <line x1="128" y1="512" x2="640" y2="0"/>
+        <line x1="192" y1="0" x2="704" y2="512"/>
+        <line x1="192" y1="512" x2="704" y2="0"/>
+        <line x1="256" y1="0" x2="768" y2="512"/>
+        <line x1="256" y1="512" x2="768" y2="0"/>
+        <line x1="320" y1="0" x2="832" y2="512"/>
+        <line x1="320" y1="512" x2="832" y2="0"/>
+        <line x1="384" y1="0" x2="896" y2="512"/>
+        <line x1="384" y1="512" x2="896" y2="0"/>
+        <line x1="448" y1="0" x2="960" y2="512"/>
+        <line x1="448" y1="512" x2="960" y2="0"/>
+        <line x1="512" y1="0" x2="1024" y2="512"/>
+        <line x1="512" y1="512" x2="1024" y2="0"/>
+        <line x1="576" y1="0" x2="1088" y2="512"/>
+        <line x1="576" y1="512" x2="1088" y2="0"/>
+        <line x1="640" y1="0" x2="1152" y2="512"/>
+        <line x1="640" y1="512" x2="1152" y2="0"/>
+        <line x1="704" y1="0" x2="1216" y2="512"/>
+        <line x1="704" y1="512" x2="1216" y2="0"/>
+        <line x1="768" y1="0" x2="1280" y2="512"/>
+        <line x1="768" y1="512" x2="1280" y2="0"/>
+        <line x1="832" y1="0" x2="1344" y2="512"/>
+        <line x1="832" y1="512" x2="1344" y2="0"/>
+        <line x1="896" y1="0" x2="1408" y2="512"/>
+        <line x1="896" y1="512" x2="1408" y2="0"/>
+        <line x1="960" y1="0" x2="1472" y2="512"/>
+        <line x1="960" y1="512" x2="1472" y2="0"/>
+        <line x1="1024" y1="0" x2="1536" y2="512"/>
+        <line x1="1024" y1="512" x2="1536" y2="0"/>
+    </g>
+    <circle cx="256" cy="256" r="200" fill="none" stroke="#F3DD94" stroke-opacity="0.20" stroke-width="2"/>
+    <polygon points="92.00,62.00 96.97,79.99 113.21,70.79 104.01,87.03 122.00,92.00 104.01,96.97 113.21,113.21 96.97,104.01 92.00,122.00 87.03,104.01 70.79,113.21 79.99,96.97 62.00,92.00 79.99,87.03 70.79,70.79 87.03,79.99" fill="none" stroke="#F3DD94" stroke-opacity="0.30" stroke-width="2.5"/>
+        <polygon points="420.00,62.00 424.97,79.99 441.21,70.79 432.01,87.03 450.00,92.00 432.01,96.97 441.21,113.21 424.97,104.01 420.00,122.00 415.03,104.01 398.79,113.21 407.99,96.97 390.00,92.00 407.99,87.03 398.79,70.79 415.03,79.99" fill="none" stroke="#F3DD94" stroke-opacity="0.30" stroke-width="2.5"/>
+        <polygon points="92.00,390.00 96.97,407.99 113.21,398.79 104.01,415.03 122.00,420.00 104.01,424.97 113.21,441.21 96.97,432.01 92.00,450.00 87.03,432.01 70.79,441.21 79.99,424.97 62.00,420.00 79.99,415.03 70.79,398.79 87.03,407.99" fill="none" stroke="#F3DD94" stroke-opacity="0.30" stroke-width="2.5"/>
+        <polygon points="420.00,390.00 424.97,407.99 441.21,398.79 432.01,415.03 450.00,420.00 432.01,424.97 441.21,441.21 424.97,432.01 420.00,450.00 415.03,432.01 398.79,441.21 407.99,424.97 390.00,420.00 407.99,415.03 398.79,398.79 415.03,407.99" fill="none" stroke="#F3DD94" stroke-opacity="0.30" stroke-width="2.5"/>
+    <g transform="translate(256 256) scale(0.78) translate(-256 -256)">
+        
+    <g filter="url(#soft)">
+        <polygon points="256.00,16.00 318.76,104.48 425.71,86.29 407.52,193.24 496.00,256.00 407.52,318.76 425.71,425.71 318.76,407.52 256.00,496.00 193.24,407.52 86.29,425.71 104.48,318.76 16.00,256.00 104.48,193.24 86.29,86.29 193.24,104.48" fill="url(#gold)"/>
+        <polygon points="256.00,60.00 307.28,132.20 394.59,117.41 379.80,204.72 452.00,256.00 379.80,307.28 394.59,394.59 307.28,379.80 256.00,452.00 204.72,379.80 117.41,394.59 132.20,307.28 60.00,256.00 132.20,204.72 117.41,117.41 204.72,132.20" fill="none" stroke="#F3DD94" stroke-opacity="0.55" stroke-width="2"/>
+    </g>
+    <circle cx="256" cy="256" r="122" fill="#07382A"/>
+    <circle cx="256" cy="256" r="122" fill="none" stroke="url(#gold)" stroke-width="7"/>
+    <circle cx="256" cy="256" r="108" fill="none" stroke="#F3DD94" stroke-opacity="0.45" stroke-width="1.6"/>
+    <text x="256" y="291" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" letter-spacing="1" fill="url(#goldText)">RM</text>
+    </g>
+</svg>

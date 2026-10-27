@@ -768,7 +768,9 @@ async function main() {
             const manifest = await evaluate(`fetch('manifest.json').then((r) => r.json())`);
             assert.match(manifest.name, /Pengurus Bayaran/);
             assert.equal(manifest.lang, 'ms');
-            assert.equal(manifest.icons.length, 2);
+            assert.equal(manifest.icons.length, 4);
+            assert.ok(manifest.icons.some((icon) => icon.purpose === 'maskable'), 'ikon maskable diperlukan');
+            assert.equal(manifest.theme_color, '#0e5c46');
             assert.equal(manifest.start_url, './');
 
             const sw = await waitFor(
@@ -780,9 +782,10 @@ async function main() {
             assert.match(sw.scope, new RegExp(`127\\.0\\.0\\.1:${httpPort}`));
 
             // Aset penting mesti boleh diambil (cache shell).
-            const assets = await evaluate(`Promise.all(['index.html', 'styles.css', 'lib.js', 'app.js', 'manifest.json', 'icons/icon-192.png']
+            const assets = await evaluate(`Promise.all(['index.html', 'styles.css', 'lib.js', 'app.js', 'manifest.json', 'icons/icon-192.png',
+                'icons/icon.svg', 'icons/icon-maskable-512.png', 'icons/apple-touch-icon.png', 'social/og-card.png']
                 .map((path) => fetch(path).then((r) => r.status)))`);
-            assert.deepEqual(assets, [200, 200, 200, 200, 200, 200]);
+            assert.deepEqual(assets, [200, 200, 200, 200, 200, 200, 200, 200, 200, 200]);
         });
 
         for (const { name, fn } of steps) {

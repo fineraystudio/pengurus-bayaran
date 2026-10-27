@@ -1,7 +1,7 @@
 // Service worker — Pengurus Bayaran (PWA)
 // Berdasarkan "Payment Manager" daripada personal-efficiency-machine (Farid Rameli). MIT.
 
-const CACHE_NAME = 'pengurus-bayaran-v2';
+const CACHE_NAME = 'pengurus-bayaran-v3';
 const APP_SHELL = [
     './',
     './index.html',
@@ -9,8 +9,13 @@ const APP_SHELL = [
     './lib.js',
     './app.js',
     './manifest.json',
+    './icons/icon.svg',
     './icons/icon-192.png',
-    './icons/icon-512.png'
+    './icons/icon-512.png',
+    './icons/icon-maskable-512.png',
+    './icons/apple-touch-icon.png',
+    './icons/favicon-32.png',
+    './social/og-card.png'
 ];
 
 self.addEventListener('install', (event) => {

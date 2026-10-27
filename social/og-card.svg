@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 630" role="img" aria-label="Pengurus Bayaran">
+    
+    <defs>
+        <radialGradient id="bg" cx="44%" cy="32%" r="82%">
+            <stop offset="0" stop-color="#15805F"/>
+            <stop offset="0.55" stop-color="#0E5C46"/>
+            <stop offset="1" stop-color="#07382A"/>
+        </radialGradient>
+        <linearGradient id="gold" x1="0.1" y1="0" x2="0.9" y2="1">
+            <stop offset="0" stop-color="#F7E7AE"/>
+            <stop offset="0.35" stop-color="#D4AF37"/>
+            <stop offset="0.7" stop-color="#A8821B"/>
+            <stop offset="1" stop-color="#E4C56A"/>
+        </linearGradient>
+        <linearGradient id="goldText" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FFF0C2"/>
+            <stop offset="0.55" stop-color="#F3DD94"/>
+            <stop offset="1" stop-color="#D4AF37"/>
+        </linearGradient>
+        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#02241A" flood-opacity="0.45"/>
+        </filter>
+    </defs>
+    <rect width="1200" height="630" fill="url(#bg)"/>
+    <g stroke="#F3DD94" stroke-opacity="0.06" stroke-width="1.6"><line x1="-700" y1="0" x2="-70" y2="630"/><line x1="-700" y1="630" x2="-70" y2="0"/><line x1="-630" y1="0" x2="0" y2="630"/><line x1="-630" y1="630" x2="0" y2="0"/><line x1="-560" y1="0" x2="70" y2="630"/><line x1="-560" y1="630" x2="70" y2="0"/><line x1="-490" y1="0" x2="140" y2="630"/><line x1="-490" y1="630" x2="140" y2="0"/><line x1="-420" y1="0" x2="210" y2="630"/><line x1="-420" y1="630" x2="210" y2="0"/><line x1="-350" y1="0" x2="280" y2="630"/><line x1="-350" y1="630" x2="280" y2="0"/><line x1="-280" y1="0" x2="350" y2="630"/><line x1="-280" y1="630" x2="350" y2="0"/><line x1="-210" y1="0" x2="420" y2="630"/><line x1="-210" y1="630" x2="420" y2="0"/><line x1="-140" y1="0" x2="490" y2="630"/><line x1="-140" y1="630" x2="490" y2="0"/><line x1="-70" y1="0" x2="560" y2="630"/><line x1="-70" y1="630" x2="560" y2="0"/><line x1="0" y1="0" x2="630" y2="630"/><line x1="0" y1="630" x2="630" y2="0"/><line x1="70" y1="0" x2="700" y2="630"/><line x1="70" y1="630" x2="700" y2="0"/><line x1="140" y1="0" x2="770" y2="630"/><line x1="140" y1="630" x2="770" y2="0"/><line x1="210" y1="0" x2="840" y2="630"/><line x1="210" y1="630" x2="840" y2="0"/><line x1="280" y1="0" x2="910" y2="630"/><line x1="280" y1="630" x2="910" y2="0"/><line x1="350" y1="0" x2="980" y2="630"/><line x1="350" y1="630" x2="980" y2="0"/><line x1="420" y1="0" x2="1050" y2="630"/><line x1="420" y1="630" x2="1050" y2="0"/><line x1="490" y1="0" x2="1120" y2="630"/><line x1="490" y1="630" x2="1120" y2="0"/><line x1="560" y1="0" x2="1190" y2="630"/><line x1="560" y1="630" x2="1190" y2="0"/><line x1="630" y1="0" x2="1260" y2="630"/><line x1="630" y1="630" x2="1260" y2="0"/><line x1="700" y1="0" x2="1330" y2="630"/><line x1="700" y1="630" x2="1330" y2="0"/><line x1="770" y1="0" x2="1400" y2="630"/><line x1="770" y1="630" x2="1400" y2="0"/><line x1="840" y1="0" x2="1470" y2="630"/><line x1="840" y1="630" x2="1470" y2="0"/><line x1="910" y1="0" x2="1540" y2="630"/><line x1="910" y1="630" x2="1540" y2="0"/><line x1="980" y1="0" x2="1610" y2="630"/><line x1="980" y1="630" x2="1610" y2="0"/><line x1="1050" y1="0" x2="1680" y2="630"/><line x1="1050" y1="630" x2="1680" y2="0"/><line x1="1120" y1="0" x2="1750" y2="630"/><line x1="1120" y1="630" x2="1750" y2="0"/><line x1="1190" y1="0" x2="1820" y2="630"/><line x1="1190" y1="630" x2="1820" y2="0"/><line x1="1260" y1="0" x2="1890" y2="630"/><line x1="1260" y1="630" x2="1890" y2="0"/><line x1="1330" y1="0" x2="1960" y2="630"/><line x1="1330" y1="630" x2="1960" y2="0"/><line x1="1400" y1="0" x2="2030" y2="630"/><line x1="1400" y1="630" x2="2030" y2="0"/><line x1="1470" y1="0" x2="2100" y2="630"/><line x1="1470" y1="630" x2="2100" y2="0"/></g>
+    <g transform="translate(236 315) scale(0.66) translate(-256 -256)">
+        <g>
+    <g filter="url(#soft)">
+        <polygon points="256.00,16.00 318.76,104.48 425.71,86.29 407.52,193.24 496.00,256.00 407.52,318.76 425.71,425.71 318.76,407.52 256.00,496.00 193.24,407.52 86.29,425.71 104.48,318.76 16.00,256.00 104.48,193.24 86.29,86.29 193.24,104.48" fill="url(#gold)"/>
+        <polygon points="256.00,60.00 307.28,132.20 394.59,117.41 379.80,204.72 452.00,256.00 379.80,307.28 394.59,394.59 307.28,379.80 256.00,452.00 204.72,379.80 117.41,394.59 132.20,307.28 60.00,256.00 132.20,204.72 117.41,117.41 204.72,132.20" fill="none" stroke="#F3DD94" stroke-opacity="0.55" stroke-width="2"/>
+    </g>
+    <circle cx="256" cy="256" r="122" fill="#07382A"/>
+    <circle cx="256" cy="256" r="122" fill="none" stroke="url(#gold)" stroke-width="7"/>
+    <circle cx="256" cy="256" r="108" fill="none" stroke="#F3DD94" stroke-opacity="0.45" stroke-width="1.6"/>
+    <text x="256" y="291" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="92" font-weight="700" letter-spacing="1" fill="url(#goldText)">RM</text></g>
+    </g>
+    <g fill="#F3DD94">
+        <text x="440" y="292" font-family="Georgia, 'Times New Roman', serif" font-size="76" font-weight="700">Pengurus Bayaran</text>
+        <text x="443" y="348" font-family="'Segoe UI', Arial, sans-serif" font-size="32" fill-opacity="0.92">Urus bayaran bulanan anda dengan mudah</text>
+        <text x="443" y="404" font-family="'Segoe UI', Arial, sans-serif" font-size="24" fill-opacity="0.68">Bahasa Melayu · Ringgit Malaysia · Kalendar Hijrah · Kalkulator Zakat</text>
+    </g>
+    <rect x="443" y="432" width="120" height="6" rx="3" fill="url(#gold)"/>
+</svg>
