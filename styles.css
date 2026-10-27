@@ -1,0 +1,433 @@
+/* Pengurus Bayaran — gaya
+   Berdasarkan "Payment Manager" daripada personal-efficiency-machine (Farid Rameli). MIT. */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 15px 10px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 1.4em;
+    margin-bottom: 0;
+}
+
+.header .subtitle {
+    font-size: 0.85em;
+    opacity: 0.9;
+    margin-top: 4px;
+}
+
+.controls {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.month-selector {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex: 1;
+}
+
+.month-selector select {
+    padding: 6px 10px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9em;
+    background: white;
+    cursor: pointer;
+}
+
+.btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.btn:focus-visible,
+select:focus-visible,
+input:focus-visible {
+    outline: 3px solid #ffc107;
+    outline-offset: 1px;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-success {
+    background: #28a745;
+    color: white;
+}
+
+.btn-success:hover {
+    background: #218838;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+    padding: 4px 8px;
+    font-size: 0.75em;
+}
+
+.btn-danger:hover {
+    background: #c82333;
+}
+
+.btn-edit {
+    background: #ffc107;
+    color: #212529;
+    padding: 4px 8px;
+    font-size: 0.75em;
+}
+
+.btn-edit:hover {
+    background: #e0a800;
+}
+
+.summary {
+    padding: 15px;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.summary-item {
+    text-align: center;
+}
+
+.summary-label {
+    color: #6c757d;
+    font-size: 0.75em;
+    margin-bottom: 3px;
+}
+
+.summary-value {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #495057;
+}
+
+.summary-value.total {
+    color: #667eea;
+}
+
+.filter-sort-controls {
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.filter-row {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.filter-row + .filter-row {
+    margin-top: 10px;
+}
+
+.filter-row label {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #495057;
+}
+
+.filter-row .label-spaced {
+    margin-left: 10px;
+}
+
+.filter-row select {
+    padding: 6px 10px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9em;
+    background: white;
+    cursor: pointer;
+}
+
+.payments-list {
+    padding: 15px;
+}
+
+.payment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #667eea;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.payment-item:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-info {
+    flex: 1;
+    min-width: 0;
+    padding-right: 8px;
+}
+
+.payment-title {
+    font-size: 1em;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 3px;
+    overflow-wrap: anywhere;
+}
+
+.payment-date {
+    color: #6c757d;
+    font-size: 0.8em;
+}
+
+.payment-amount {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #667eea;
+    margin: 0 10px;
+    white-space: nowrap;
+}
+
+.payment-status {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    font-weight: 600;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-unpaid {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.payment-type {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    margin-right: 8px;
+    white-space: nowrap;
+}
+
+.type-monthly {
+    background: #e7f3ff;
+    color: #0066cc;
+}
+
+.type-extra {
+    background: #fff4e6;
+    color: #cc6600;
+}
+
+.payment-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6c757d;
+    padding: 24px 12px;
+    font-size: 0.9em;
+    line-height: 1.6;
+}
+
+.footer {
+    text-align: center;
+    color: #6c757d;
+    font-size: 0.75em;
+    padding: 12px 15px 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    max-width: 500px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    color: #212529;
+    font-size: 1.3em;
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #495057;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 0.9em;
+    font-family: inherit;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 15px;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .month-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .summary {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .summary-item {
+        width: 100%;
+    }
+
+    .payment-item {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .payment-info {
+        width: 100%;
+        flex-basis: 100%;
+    }
+
+    .payment-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}

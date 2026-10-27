@@ -1,0 +1,6 @@
+# Data peribadi dan fail sementara
+data-pengurus-bayaran.json
+payments-data.json
+node_modules/
+.DS_Store
+Thumbs.db

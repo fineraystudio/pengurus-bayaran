@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="Pengurus Bayaran — urus bayaran dan perbelanjaan bulanan anda dengan mudah. Semua data disimpan dalam peranti anda.">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Pengurus Bayaran">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+    <title>Pengurus Bayaran — Urus Bayaran Bulanan Anda</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💰 Pengurus Bayaran</h1>
+            <p class="subtitle">Urus bayaran bulanan anda dengan mudah</p>
+        </header>
+
+        <div class="controls">
+            <div class="month-selector">
+                <select id="monthSelect" aria-label="Pilih bulan" onchange="switchMonth()">
+                    <!-- Bulan akan diisi di sini -->
+                </select>
+                <button class="btn btn-primary" onclick="showNewMonthModal()">➕ Bulan Baharu</button>
+            </div>
+            <button class="btn btn-success" onclick="showAddPaymentModal()">Tambah Bayaran</button>
+            <button class="btn btn-secondary" onclick="exportData()" aria-label="Eksport data ke fail">💾 Eksport</button>
+            <button class="btn btn-secondary" onclick="importData()" aria-label="Import data daripada fail">📂 Import</button>
+            <button id="installButton" class="btn btn-primary" onclick="installApp()" style="display: none;">📱 Pasang Aplikasi</button>
+        </div>
+
+        <div class="summary">
+            <div class="summary-item">
+                <div class="summary-label">Bilangan Bayaran</div>
+                <div class="summary-value" id="totalCount">0</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Jumlah Keseluruhan</div>
+                <div class="summary-value total" id="totalAmount">RM 0.00</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Sudah Dibayar</div>
+                <div class="summary-value" style="color: #28a745;" id="paidCount">0</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Jumlah Bulanan</div>
+                <div class="summary-value" style="color: #0066cc;" id="monthlyTotal">RM 0.00</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Jumlah Tambahan</div>
+                <div class="summary-value" style="color: #cc6600;" id="extraTotal">RM 0.00</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Amaun Dibayar</div>
+                <div class="summary-value" style="color: #28a745;" id="paidAmount">RM 0.00</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-label">Amaun Belum Dibayar</div>
+                <div class="summary-value" style="color: #dc3545;" id="unpaidAmount">RM 0.00</div>
+            </div>
+        </div>
+
+        <div class="filter-sort-controls">
+            <div class="filter-row">
+                <label for="filterType">Tapis Ikut Jenis:</label>
+                <select id="filterType" onchange="applyFiltersAndSort()">
+                    <option value="all">Semua</option>
+                    <option value="monthly">Bulanan Sahaja</option>
+                    <option value="extra">Tambahan Sahaja</option>
+                </select>
+                <label for="filterStatus" class="label-spaced">Tapis Ikut Status:</label>
+                <select id="filterStatus" onchange="applyFiltersAndSort()">
+                    <option value="all">Semua</option>
+                    <option value="paid">Sudah Dibayar Sahaja</option>
+                    <option value="unpaid">Belum Dibayar Sahaja</option>
+                </select>
+            </div>
+            <div class="filter-row">
+                <label for="sortBy">Susun Ikut:</label>
+                <select id="sortBy" onchange="applyFiltersAndSort()">
+                    <option value="status">Status (Belum Dibayar Dahulu)</option>
+                    <option value="status-desc">Status (Sudah Dibayar Dahulu)</option>
+                    <option value="type">Jenis (Bulanan Dahulu)</option>
+                    <option value="type-desc">Jenis (Tambahan Dahulu)</option>
+                    <option value="date">Tarikh (Paling Awal Dahulu)</option>
+                    <option value="date-desc">Tarikh (Paling Baru Dahulu)</option>
+                    <option value="amount">Amaun (Terendah Dahulu)</option>
+                    <option value="amount-desc">Amaun (Tertinggi Dahulu)</option>
+                    <option value="title">Nama (A–Z)</option>
+                    <option value="title-desc">Nama (Z–A)</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="payments-list" id="paymentsList">
+            <!-- Senarai bayaran akan dipaparkan di sini -->
+        </div>
+
+        <footer class="footer">
+            Data disimpan dalam peranti anda sahaja. Tiada akaun, tiada muat naik.
+        </footer>
+    </div>
+
+    <!-- Tetingkap Tambah/Edit Bayaran -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Tambah Bayaran</h2>
+            </div>
+            <form id="paymentForm" onsubmit="savePayment(event)">
+                <div class="form-group">
+                    <label for="paymentTitle">Nama Bayaran *</label>
+                    <input type="text" id="paymentTitle" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentAmount">Amaun (RM) *</label>
+                    <input type="number" id="paymentAmount" step="0.01" min="0" autocomplete="off" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentDate">Tarikh Bayaran *</label>
+                    <input type="date" id="paymentDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="paymentType">Jenis Bayaran *</label>
+                    <select id="paymentType" required>
+                        <option value="monthly">Komitmen Bulanan</option>
+                        <option value="extra">Tambahan</option>
+                    </select>
+                </div>
+                <div class="form-group checkbox-group">
+                    <input type="checkbox" id="paymentPaid">
+                    <label for="paymentPaid">Sudah Dibayar</label>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tetingkap Bulan Baharu -->
+    <div id="newMonthModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Cipta Bulan Baharu</h2>
+            </div>
+            <form id="newMonthForm" onsubmit="createNewMonth(event)">
+                <div class="form-group">
+                    <label for="newMonth">Bulan *</label>
+                    <select id="newMonth" required>
+                        <option value="January">Januari</option>
+                        <option value="February">Februari</option>
+                        <option value="March">Mac</option>
+                        <option value="April">April</option>
+                        <option value="May">Mei</option>
+                        <option value="June">Jun</option>
+                        <option value="July">Julai</option>
+                        <option value="August">Ogos</option>
+                        <option value="September">September</option>
+                        <option value="October">Oktober</option>
+                        <option value="November">November</option>
+                        <option value="December">Disember</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="newYear">Tahun *</label>
+                    <input type="number" id="newYear" min="2000" max="2100" required value="2026">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeNewMonthModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Cipta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleImport(event)">
+
+    <noscript>
+        <p style="text-align:center;padding:20px;background:#fff3cd;color:#664d03;">
+            Pengurus Bayaran memerlukan JavaScript. Sila hidupkan JavaScript dalam pelayar anda.
+        </p>
+    </noscript>
+
+    <script src="lib.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
