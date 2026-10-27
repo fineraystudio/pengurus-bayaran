@@ -222,3 +222,35 @@ test('mostRecentMonthKey memilih bulan terkini', () => {
     assert.equal(L.mostRecentMonthKey({}), null);
     assert.equal(L.mostRecentMonthKey(null), null);
 });
+
+test('calculateZakat mengira zakat dengan betul untuk simpanan melebihi nisab', () => {
+    const result = L.calculateZakat(20000);
+    assert.equal(result.nisab, 15000);
+    assert.equal(result.savings, 20000);
+    assert.equal(result.isEligible, true);
+    assert.equal(result.zakatDue, 500); // 2.5% of 20000
+});
+
+test('calculateZakat menunjukkan tidak layar untuk simpanan bawah nisab', () => {
+    const result = L.calculateZakat(10000);
+    assert.equal(result.nisab, 15000);
+    assert.equal(result.savings, 10000);
+    assert.equal(result.isEligible, false);
+    assert.equal(result.zakatDue, 0);
+});
+
+test('calculateZakat mengendalikan tepat pada nisab', () => {
+    const result = L.calculateZakat(15000);
+    assert.equal(result.isEligible, true);
+    assert.equal(result.zakatDue, 375); // 2.5% of 15000
+});
+
+test('calculateZakat selamat dengan nilai tidak sah', () => {
+    const resultNaN = L.calculateZakat('bukan nombor');
+    assert.equal(resultNaN.isEligible, false);
+    assert.equal(resultNaN.zakatDue, 0);
+
+    const resultNegative = L.calculateZakat(-1000);
+    assert.equal(resultNegative.isEligible, false);
+    assert.equal(resultNegative.zakatDue, 0);
+});

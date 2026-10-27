@@ -474,6 +474,50 @@ window.addEventListener('appinstalled', function () {
     deferredPrompt = null;
 });
 
+/* ---------- Kalkulator Zakat ---------- */
+
+function toggleZakat() {
+    const content = $('zakatContent');
+    const toggle = $('zakatToggle');
+
+    if (content.classList.contains('active')) {
+        content.classList.remove('active');
+        toggle.classList.remove('open');
+    } else {
+        content.classList.add('active');
+        toggle.classList.add('open');
+    }
+}
+
+function calculateZakatAmount() {
+    const savingsInput = $('zakatSavings');
+    const resultDiv = $('zakatResult');
+    const statusDiv = $('zakatStatus');
+    const amountDiv = $('zakatAmount');
+
+    const savingsValue = Number(savingsInput.value);
+
+    if (!savingsValue || savingsValue <= 0) {
+        resultDiv.style.display = 'none';
+        return;
+    }
+
+    const result = L.calculateZakat(savingsValue);
+
+    resultDiv.style.display = 'block';
+
+    if (result.isEligible) {
+        statusDiv.innerHTML = '✅ Simpanan anda telah mencapai nisab. Zakat wajib dibayar.';
+        amountDiv.innerHTML = '<strong>Zakat yang perlu dibayar:</strong> ' + L.formatRM(result.zakatDue);
+        amountDiv.style.color = '#0d9488';
+    } else {
+        statusDiv.innerHTML = '💡 Simpanan anda belum mencapai nisab (RM 15,000). Zakat tidak wajib buat masa ini.';
+        amountDiv.innerHTML = '<strong>Nisab:</strong> ' + L.formatRM(result.nisab) + '<br>' +
+                              '<strong>Baki untuk capai nisab:</strong> ' + L.formatRM(result.nisab - result.savings);
+        amountDiv.style.color = '#6c757d';
+    }
+}
+
 /* ---------- Mula ---------- */
 
 function init() {

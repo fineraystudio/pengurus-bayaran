@@ -189,6 +189,31 @@
         })[0];
     }
 
+    // Kira Zakat ke atas simpanan.
+    // Nisab = RM 15,000 (anggaran berdasarkan harga perak semasa di Malaysia)
+    // Kadar Zakat = 2.5% daripada simpanan yang melebihi nisab
+    function calculateZakat(savingsAmount) {
+        var NISAB = 15000;
+        var ZAKAT_RATE = 0.025;
+        var savings = Number(savingsAmount);
+
+        if (!isFinite(savings) || savings < NISAB) {
+            return {
+                nisab: NISAB,
+                savings: savings,
+                isEligible: false,
+                zakatDue: 0
+            };
+        }
+
+        return {
+            nisab: NISAB,
+            savings: savings,
+            isEligible: true,
+            zakatDue: savings * ZAKAT_RATE
+        };
+    }
+
     return {
         MONTHS_EN: MONTHS_EN,
         MONTHS_MS: MONTHS_MS,
@@ -203,6 +228,7 @@
         computeSummary: computeSummary,
         nextPaymentId: nextPaymentId,
         createMonthRecord: createMonthRecord,
-        mostRecentMonthKey: mostRecentMonthKey
+        mostRecentMonthKey: mostRecentMonthKey,
+        calculateZakat: calculateZakat
     };
 });

@@ -64,6 +64,35 @@
             </div>
         </div>
 
+        <div class="zakat-section">
+            <div class="zakat-header" onclick="toggleZakat()">
+                <h2>🌙 Kalkulator Zakat</h2>
+                <span class="zakat-toggle" id="zakatToggle">▼</span>
+            </div>
+            <div class="zakat-content" id="zakatContent">
+                <div class="zakat-explainer">
+                    <p><strong>Zakat</strong> adalah salah satu rukun Islam — 2.5% daripada simpanan yang telah mencapai nisab (RM 15,000) dan disimpan selama setahun.</p>
+                </div>
+                <div class="zakat-calculator">
+                    <div class="form-group">
+                        <label for="zakatSavings">Jumlah Simpanan Tahunan Anda (RM)</label>
+                        <input type="number" id="zakatSavings" placeholder="Contoh: 20000" min="0" step="0.01" oninput="calculateZakatAmount()">
+                    </div>
+                    <div class="zakat-result" id="zakatResult" style="display: none;">
+                        <div class="zakat-status" id="zakatStatus"></div>
+                        <div class="zakat-amount" id="zakatAmount"></div>
+                    </div>
+                </div>
+                <div class="zakat-info">
+                    <small>
+                        <strong>Nisab:</strong> RM 15,000 (anggaran berdasarkan harga perak semasa)<br>
+                        <strong>Kadar:</strong> 2.5% daripada simpanan yang melebihi nisab<br>
+                        <strong>Nota:</strong> Ini adalah kalkulator mudah sahaja. Rujuk pihak berkuasa agama untuk pengiraan tepat.
+                    </small>
+                </div>
+            </div>
+        </div>
+
         <div class="filter-sort-controls">
             <div class="filter-row">
                 <label for="filterType">Tapis Ikut Jenis:</label>

@@ -396,6 +396,100 @@ input:focus-visible {
     margin-bottom: 0;
 }
 
+.zakat-section {
+    background: #f0f9ff;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.zakat-header {
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.zakat-header:hover {
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+}
+
+.zakat-header h2 {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.zakat-toggle {
+    font-size: 1.2em;
+    transition: transform 0.3s;
+}
+
+.zakat-toggle.open {
+    transform: rotate(180deg);
+}
+
+.zakat-content {
+    padding: 15px;
+    display: none;
+}
+
+.zakat-content.active {
+    display: block;
+}
+
+.zakat-explainer {
+    background: #e0f2fe;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border-left: 4px solid #0d9488;
+}
+
+.zakat-explainer p {
+    color: #0c4a6e;
+    font-size: 0.9em;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.zakat-calculator {
+    margin-bottom: 15px;
+}
+
+.zakat-result {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 8px;
+    background: white;
+    border: 2px solid #0d9488;
+}
+
+.zakat-status {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    color: #0c4a6e;
+}
+
+.zakat-amount {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #0d9488;
+}
+
+.zakat-info {
+    background: #fef3c7;
+    padding: 12px;
+    border-radius: 8px;
+    border-left: 4px solid #f59e0b;
+}
+
+.zakat-info small {
+    color: #78350f;
+    line-height: 1.6;
+}
+
 @media (max-width: 600px) {
     .controls {
         flex-direction: column;
