@@ -331,17 +331,32 @@ async function main() {
             const listing = await openPage(debugPort, TOOLS_URL);
             const api = makeApi(listing);
             try {
+                // Imej tangkapan skrin menggunakan loading="lazy"; paksa muat dalam ujian.
+                await api.waitFor(() => api.evaluate(`(() => {
+                    if (document.readyState !== 'complete') return false;
+                    document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+                        img.loading = 'eager';
+                        if (!img.complete) img.src = img.src;
+                    });
+                    window.scrollTo(0, document.body.scrollHeight);
+                    return true;
+                })()`), 'imej senarai diminta');
                 const info = await api.waitFor(() => api.evaluate(`(() => {
                     const link = Array.from(document.querySelectorAll('a'))
                         .find((a) => /Buka aplikasi/i.test(a.textContent));
                     const images = Array.from(document.querySelectorAll('img'));
+                    if (!location.href.startsWith(${JSON.stringify(TOOLS_URL)}) || !document.title) return null;
+                    if (document.documentElement.lang !== 'ms') return null; // tunggu hidrasi suis bahasa
+                    if (images.some((img) => !(img.complete && img.naturalWidth > 0))) return null; // tunggu semua imej
                     return {
                         ready: document.readyState === 'complete',
                         title: document.title,
                         lang: document.documentElement.lang,
                         cta: link ? link.href : '',
                         images: images.map((img) => ({ src: img.currentSrc || img.src, loaded: img.complete && img.naturalWidth > 0 })),
-                        privacy: !!Array.from(document.querySelectorAll('a')).find((a) => /privasi/i.test(a.href))
+                        privacy: Array.from(document.querySelectorAll('a'))
+                            .filter((a) => /(privacy|privasi)/i.test(a.href))
+                            .map((a) => a.href)
                     };
                 })()`), 'halaman senarai dimuatkan');
                 assert.match(info.title, /Pengurus Bayaran/);
@@ -350,7 +365,11 @@ async function main() {
                 assert.ok(info.images.length >= 3, 'Sekurang-kurangnya 3 tangkapan skrin dijangka');
                 const broken = info.images.filter((img) => !img.loaded);
                 assert.deepEqual(broken, [], 'Imej gagal dimuatkan: ' + JSON.stringify(broken));
-                assert.equal(info.privacy, true);
+                assert.ok(info.privacy.length > 0, 'Pautan dasar privasi diperlukan');
+                for (const href of info.privacy) {
+                    const status = await api.evaluate(`fetch(${JSON.stringify(href)}).then((r) => r.status)`);
+                    assert.equal(status, 200, `Pautan privasi gagal: ${href}`);
+                }
             } finally {
                 listing.close();
             }
