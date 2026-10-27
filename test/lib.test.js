@@ -254,3 +254,64 @@ test('calculateZakat selamat dengan nilai tidak sah', () => {
     assert.equal(resultNegative.isEligible, false);
     assert.equal(resultNegative.zakatDue, 0);
 });
+
+/* ----- Kalendar Hijrah ----- */
+
+test('gregorianToHijri menukar tarikh rujukan dengan tepat', () => {
+    // Tarikh-tarikh ini sama dalam kalendar Umm al-Qura dan tabular.
+    assert.deepEqual(L.gregorianToHijri('2023-07-19'), { year: 1445, month: 1, day: 1 });   // 1 Muharram 1445
+    assert.deepEqual(L.gregorianToHijri('2024-03-11'), { year: 1445, month: 9, day: 1 });   // 1 Ramadan 1445
+    assert.deepEqual(L.gregorianToHijri('2024-04-10'), { year: 1445, month: 10, day: 1 });  // 1 Syawal 1445
+    assert.deepEqual(L.gregorianToHijri('2025-03-01'), { year: 1446, month: 9, day: 1 });   // 1 Ramadan 1446
+});
+
+test('gregorianToHijri menukar tarikh moden dengan betul', () => {
+    // 27 Oktober 2026 = 16 Jamadilawal 1448 (Umm al-Qura); tabular beri 15.
+    const result = L.gregorianToHijri('2026-10-27');
+    assert.equal(result.year, 1448);
+    assert.equal(result.month, 5);
+    assert.ok(result.day === 15 || result.day === 16, 'hari Hijrah sepatutnya 15 atau 16');
+});
+
+test('gregorianToHijri tidak terjejas oleh zon waktu', () => {
+    assert.deepEqual(L.gregorianToHijri('2023-07-19T23:30:00'), { year: 1445, month: 1, day: 1 });
+    assert.deepEqual(L.gregorianToHijri(new Date(2024, 2, 11)), { year: 1445, month: 9, day: 1 });
+});
+
+test('gregorianToHijriTabular (sandaran tanpa Intl) menukar tarikh dengan betul', () => {
+    assert.deepEqual(L.gregorianToHijriTabular('2023-07-19'), { year: 1445, month: 1, day: 1 });
+    assert.deepEqual(L.gregorianToHijriTabular('2024-03-11'), { year: 1445, month: 9, day: 1 });
+    assert.deepEqual(L.gregorianToHijriTabular('2026-10-27'), { year: 1448, month: 5, day: 15 });
+    assert.deepEqual(L.gregorianToHijriTabular('2026-12-31'), { year: 1448, month: 7, day: 21 });
+});
+
+test('gregorianToHijri mengendalikan tarikh yang tidak sah', () => {
+    ['tarikh rosak', '2026-02-30', '', null, undefined].forEach((value) => {
+        assert.deepEqual(L.gregorianToHijri(value), { year: 0, month: 0, day: 0 });
+        assert.deepEqual(L.gregorianToHijriTabular(value), { year: 0, month: 0, day: 0 });
+    });
+});
+
+test('formatHijriDate memformat tarikh Hijri dalam Bahasa Melayu', () => {
+    assert.equal(L.formatHijriDate('2023-07-19'), '1 Muharram 1445H');
+    assert.equal(L.formatHijriDate('2024-04-10'), '1 Syawal 1445H');
+
+    const moden = L.gregorianToHijri('2026-10-27');
+    assert.equal(L.formatHijriDate('2026-10-27'), moden.day + ' Jamadilawal 1448H');
+});
+
+test('formatHijriDate mengembalikan kosong untuk tarikh tidak sah', () => {
+    assert.equal(L.formatHijriDate('tarikh rosak'), '');
+    assert.equal(L.formatHijriDate('2026-02-30'), '');
+});
+
+test('getHijriMonthName mengembalikan nama bulan yang betul', () => {
+    assert.equal(L.getHijriMonthName(1), 'Muharram');
+    assert.equal(L.getHijriMonthName(9), 'Ramadan');
+    assert.equal(L.getHijriMonthName(12), 'Zulhijjah');
+});
+
+test('getHijriMonthName selamat dengan nombor tidak sah', () => {
+    assert.equal(L.getHijriMonthName(0), '');
+    assert.equal(L.getHijriMonthName(13), '');
+});

@@ -12,6 +12,9 @@ Eksport dan import fail JSON membolehkan anda membuat salinan sandaran atau berp
 - **Bahasa Melayu sepenuhnya** — semua teks antara muka, nama bulan dan format tarikh.
 - **Ringgit Malaysia (RM)** — semua amaun dipaparkan dalam RM.
 - **Komitmen bulanan berulang** — bulan baharu menyalin sendiri semua bayaran jenis "Komitmen Bulanan".
+- **Kalkulator Zakat** — kira zakat 2.5% ke atas simpanan yang melebihi nisab RM 15,000.
+- **Kalendar Hijrah** — tarikh Hijrah hari ini, pilihan memaparkan tarikh Hijrah bagi setiap bayaran,
+  dan tapisan mengikut bulan Hijrah (Muharram hingga Zulhijjah).
 - **Tapis dan susun** — ikut jenis, status, tarikh, amaun atau nama.
 - **Eksport / import JSON** — sandaran dan pindah peranti.
 - **Boleh dipasang (PWA)** — tambah ke skrin utama telefon; berfungsi luar talian selepas lawatan pertama.
@@ -34,8 +37,13 @@ node test/e2e.mjs              # ujian hujung-ke-hujung dalam Chrome headless
 ```
 
 Ujian unit meliputi logik data dalam `lib.js` (format RM, tapisan, susunan, ringkasan, salinan
-komitmen bulanan). Ujian hujung-ke-hujung memandu halaman sebenar: tambah/sunting/padam bayaran,
-tapis, susun, bulan baharu, simpan merentas muat semula, eksport, import dan service worker.
+komitmen bulanan, zakat dan penukaran tarikh Hijrah). Ujian hujung-ke-hujung memandu halaman sebenar:
+tambah/sunting/padam bayaran, tapis, susun, paparan dan tapisan Hijrah, bulan baharu, simpan merentas
+muat semula, eksport, import dan service worker.
+
+Penukaran tarikh Hijrah menggunakan kalendar Umm al-Qura melalui `Intl` (dengan sandaran aritmetik
+tabular jika `Intl` tiada). Tarikh rasmi Malaysia (JAKIM) ditentukan melalui rukyah, jadi ia boleh
+berbeza sehari daripada paparan ini.
 
 ## Struktur
 

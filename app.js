@@ -15,6 +15,8 @@ let editingPaymentId = null;
 // Keadaan tapisan dan susunan
 let filterType = 'all';
 let filterStatus = 'all';
+let filterHijriMonth = 'all';
+let showHijriDates = false;
 let sortBy = 'status';
 
 function $(id) {
@@ -109,7 +111,12 @@ function formatDate(value) {
     const date = new Date(value + 'T00:00:00');
     if (isNaN(date.getTime())) return String(value);
     try {
-        return date.toLocaleDateString('ms-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+        const gregDate = date.toLocaleDateString('ms-MY', { year: 'numeric', month: 'long', day: 'numeric' });
+        if (showHijriDates) {
+            const hijriDate = L.formatHijriDate(value);
+            return gregDate + ' (' + hijriDate + ')';
+        }
+        return gregDate;
     } catch (error) {
         return String(value);
     }
@@ -211,11 +218,27 @@ function displayPayments() {
         return;
     }
 
-    const filtered = L.filterPayments(lists, filterType, filterStatus);
+    let filtered = L.filterPayments(lists, filterType, filterStatus);
+
+    // Tapis mengikut bulan Hijrah jika dipilih
+    if (filterHijriMonth !== 'all') {
+        const hijriMonthNum = parseInt(filterHijriMonth);
+        filtered = filtered.filter(function (payment) {
+            if (!payment.payDate) return false;
+            const hijri = L.gregorianToHijri(payment.payDate);
+            return hijri.month === hijriMonthNum;
+        });
+    }
+
     const sorted = L.sortPayments(filtered, sortBy);
 
     if (sorted.length === 0) {
-        list.appendChild(emptyState('Tiada bayaran yang sepadan dengan tapisan ini.'));
+        if (filterHijriMonth !== 'all') {
+            const monthName = L.getHijriMonthName(parseInt(filterHijriMonth, 10));
+            list.appendChild(emptyState('Tiada bayaran dalam bulan ' + monthName + '.'));
+        } else {
+            list.appendChild(emptyState('Tiada bayaran yang sepadan dengan tapisan ini.'));
+        }
         return;
     }
 
@@ -234,6 +257,8 @@ function switchMonth() {
 function applyFiltersAndSort() {
     filterType = $('filterType').value;
     filterStatus = $('filterStatus').value;
+    filterHijriMonth = $('filterHijriMonth').value;
+    showHijriDates = $('showHijriDates').checked;
     sortBy = $('sortBy').value;
     displayPayments();
 }
@@ -518,12 +543,27 @@ function calculateZakatAmount() {
     }
 }
 
+/* ---------- Kalendar Hijrah ---------- */
+
+// Papar tarikh Hijrah hari ini di bawah tajuk.
+function showTodayHijri() {
+    const element = $('todayHijri');
+    if (!element) return;
+
+    const hijri = L.formatHijriDate(todayISO());
+    if (!hijri) return;
+
+    element.textContent = '🗓️ Hari ini: ' + hijri;
+    element.hidden = false;
+}
+
 /* ---------- Mula ---------- */
 
 function init() {
     loadData();
     ensureCurrentMonth();
     populateMonthSelector();
+    showTodayHijri();
 
     $('filterType').value = filterType;
     $('filterStatus').value = filterStatus;

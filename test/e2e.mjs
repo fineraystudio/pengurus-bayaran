@@ -444,6 +444,71 @@ async function main() {
             assert.deepEqual(result.dateAsc, ['Bil Elektrik', 'Servis Kereta']);
         });
 
+        step('Paparan dan tapisan kalendar Hijrah berfungsi', async () => {
+            const result = await evaluate(`(() => {
+                const out = {};
+                const dateOf = (title) => window.__t.itemByTitle(title)
+                    .querySelector('.payment-date').textContent.trim();
+
+                // Tarikh Hijrah hari ini di bawah tajuk.
+                const today = document.getElementById('todayHijri');
+                out.todayHidden = today.hidden;
+                out.todayText = today.textContent.trim();
+
+                // Tarikh Hijrah tersembunyi secara lalai.
+                out.gregorianOnly = dateOf('Bil Elektrik');
+                out.hasHijriByDefault = out.gregorianOnly.includes('H');
+
+                // Hidupkan paparan Hijrah: 5 Okt 2026 = 24 Rabiulakhir 1448H.
+                document.getElementById('showHijriDates').checked = true;
+                window.applyFiltersAndSort();
+                out.withHijri = dateOf('Bil Elektrik');
+                out.hasHijriAfterToggle = out.withHijri.includes('24 Rabiulakhir 1448H');
+                out.hasParentheses = out.withHijri.includes('(') && out.withHijri.includes(')');
+
+                // 12 Okt 2026 = 1 Jamadilawal 1448H.
+                out.extraWithHijri = dateOf('Servis Kereta');
+                out.hasJamadilawal = out.extraWithHijri.includes('1 Jamadilawal 1448H');
+
+                // Penapis: 13 pilihan (Semua + 12 bulan).
+                out.filterSelect = document.getElementById('filterHijriMonth').options.length;
+
+                // Tapis mengikut bulan Hijrah sebenar bagi tarikh ujian.
+                window.__t.setSelect('filterHijriMonth', '4');
+                out.rabiulakhir = window.__t.titles();
+
+                window.__t.setSelect('filterHijriMonth', '5');
+                out.jamadilawal = window.__t.titles();
+
+                window.__t.setSelect('filterHijriMonth', '9');
+                out.ramadan = window.__t.titles();
+
+                window.__t.setSelect('filterHijriMonth', 'all');
+                out.allMonthsCount = window.__t.items().length;
+
+                // Matikan paparan Hijrah.
+                document.getElementById('showHijriDates').checked = false;
+                window.applyFiltersAndSort();
+                out.gregorianOnlyAgain = dateOf('Bil Elektrik').includes('H');
+
+                return out;
+            })()`);
+
+            assert.equal(result.todayHidden, false, 'Tarikh Hijrah hari ini mesti dipaparkan');
+            assert.ok(result.todayText.includes('Hari ini') && result.todayText.includes('H'),
+                'Tarikh Hijrah hari ini mesti mengandungi "Hari ini" dan penanda "H"');
+            assert.equal(result.hasHijriByDefault, false, 'Tarikh Hijrah tidak sepatutnya dipaparkan secara lalai');
+            assert.equal(result.hasHijriAfterToggle, true, 'Tarikh Hijrah mesti dipaparkan selepas toggle');
+            assert.equal(result.hasParentheses, true, 'Tarikh Hijrah mesti dalam kurungan');
+            assert.equal(result.hasJamadilawal, true, 'Tarikh 2026-10-12 mesti menjadi 1 Jamadilawal 1448H');
+            assert.equal(result.filterSelect, 13, 'Penapis Hijrah mesti mempunyai 13 pilihan (Semua + 12 bulan)');
+            assert.deepEqual(result.rabiulakhir, ['Bil Elektrik'], 'Penapis Rabiulakhir mesti tinggalkan Bil Elektrik sahaja');
+            assert.deepEqual(result.jamadilawal, ['Servis Kereta'], 'Penapis Jamadilawal mesti tinggalkan Servis Kereta sahaja');
+            assert.deepEqual(result.ramadan, [], 'Tiada bayaran dalam bulan Ramadan');
+            assert.equal(result.allMonthsCount, 2, 'Semua bayaran mesti dipaparkan tanpa tapisan');
+            assert.equal(result.gregorianOnlyAgain, false, 'Tarikh Hijrah tidak sepatutnya dipaparkan selepas tutup toggle');
+        });
+
         step('Sunting bayaran sedia ada', async () => {
             const result = await evaluate(`(() => {
                 const item = window.__t.itemByTitle('Bil Elektrik');

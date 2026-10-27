@@ -18,6 +18,7 @@
         <header class="header">
             <h1>💰 Pengurus Bayaran</h1>
             <p class="subtitle">Urus bayaran bulanan anda dengan mudah</p>
+            <p class="hijri-today" id="todayHijri" hidden></p>
         </header>
 
         <div class="controls">
@@ -109,6 +110,28 @@
                 </select>
             </div>
             <div class="filter-row">
+                <label for="filterHijriMonth">Tapis Ikut Bulan Hijrah:</label>
+                <select id="filterHijriMonth" onchange="applyFiltersAndSort()">
+                    <option value="all">Semua Bulan Hijrah</option>
+                    <option value="1">Muharram</option>
+                    <option value="2">Safar</option>
+                    <option value="3">Rabiulawal</option>
+                    <option value="4">Rabiulakhir</option>
+                    <option value="5">Jamadilawal</option>
+                    <option value="6">Jamadilakhir</option>
+                    <option value="7">Rejab</option>
+                    <option value="8">Syaaban</option>
+                    <option value="9">Ramadan</option>
+                    <option value="10">Syawal</option>
+                    <option value="11">Zulkaedah</option>
+                    <option value="12">Zulhijjah</option>
+                </select>
+                <label class="label-spaced">
+                    <input type="checkbox" id="showHijriDates" onchange="applyFiltersAndSort()">
+                    Papar Tarikh Hijrah
+                </label>
+            </div>
+            <div class="filter-row">
                 <label for="sortBy">Susun Ikut:</label>
                 <select id="sortBy" onchange="applyFiltersAndSort()">
                     <option value="status">Status (Belum Dibayar Dahulu)</option>
@@ -123,6 +146,7 @@
                     <option value="title-desc">Nama (Z–A)</option>
                 </select>
             </div>
+            <p class="hijri-note">Tarikh Hijrah dianggarkan mengikut kalendar Umm al-Qura; tarikh rasmi Malaysia boleh berbeza sehari.</p>
         </div>
 
         <div class="payments-list" id="paymentsList">

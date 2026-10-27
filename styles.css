@@ -41,6 +41,20 @@ body {
     margin-top: 4px;
 }
 
+.header .hijri-today {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+    font-size: 0.8em;
+    letter-spacing: 0.2px;
+}
+
+.header .hijri-today[hidden] {
+    display: none;
+}
+
 .controls {
     padding: 12px 15px;
     background: #f8f9fa;
@@ -190,6 +204,13 @@ input:focus-visible {
 
 .filter-row .label-spaced {
     margin-left: 10px;
+}
+
+.hijri-note {
+    margin-top: 8px;
+    font-size: 0.75em;
+    color: #6c757d;
+    line-height: 1.4;
 }
 
 .filter-row select {

@@ -23,6 +23,13 @@
     var MONTHS_MS = ['Januari', 'Februari', 'Mac', 'April', 'Mei', 'Jun',
         'Julai', 'Ogos', 'September', 'Oktober', 'November', 'Disember'];
 
+    // Nama bulan Hijrah dalam Bahasa Melayu
+    var HIJRI_MONTHS_MS = [
+        'Muharram', 'Safar', 'Rabiulawal', 'Rabiulakhir',
+        'Jamadilawal', 'Jamadilakhir', 'Rejab', 'Syaaban',
+        'Ramadan', 'Syawal', 'Zulkaedah', 'Zulhijjah'
+    ];
+
     function monthIndex(monthEn) {
         return MONTHS_EN.indexOf(monthEn);
     }
@@ -214,9 +221,140 @@
         };
     }
 
+    // ---------- Kalendar Hijrah ----------
+    // Penukaran tarikh Gregorian → Hijrah. Keutamaan: kalendar Umm al-Qura
+    // (piawaian yang digunakan di Arab Saudi, tersedia melalui Intl dalam
+    // pelayar moden). Jika Intl tiada, guna kalendar Hijrah tabular (Kuwaiti)
+    // yang tepat secara aritmetik. Tarikh rasmi Malaysia (JAKIM) ditentukan
+    // melalui rukyah, jadi ia boleh berbeza sehari daripada kedua-duanya.
+
+    var hijriFormatter = null;
+    var hijriFormatterChecked = false;
+
+    function getHijriFormatter() {
+        if (hijriFormatterChecked) return hijriFormatter;
+        hijriFormatterChecked = true;
+        try {
+            if (typeof Intl === 'undefined' || !Intl.DateTimeFormat) return null;
+            var formatter = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
+                year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'UTC'
+            });
+            // Pastikan ia benar-benar menggunakan kalendar Hijrah dan bukan
+            // senyap-senyap jatuh balik ke Gregorian (sesetengah ICU kecil).
+            var parts = formatter.formatToParts(new Date(Date.UTC(2023, 6, 19, 12)));
+            var found = {};
+            parts.forEach(function (part) {
+                if (part.type !== 'literal') found[part.type] = part.value;
+            });
+            var probeYear = parseInt(found.year, 10);
+            if (probeYear > 1400 && probeYear < 1500) hijriFormatter = formatter;
+        } catch (error) {
+            hijriFormatter = null;
+        }
+        return hijriFormatter;
+    }
+
+    // Baca tarikh tanpa terjejas oleh zon waktu peranti.
+    function parseGregorianDate(value) {
+        if (value instanceof Date) {
+            if (isNaN(value.getTime())) return null;
+            return { year: value.getFullYear(), month: value.getMonth() + 1, day: value.getDate() };
+        }
+
+        var text = String(value == null ? '' : value).trim();
+        var match = /^(\d{4})-(\d{1,2})-(\d{1,2})/.exec(text);
+        if (match) {
+            var year = parseInt(match[1], 10);
+            var month = parseInt(match[2], 10);
+            var day = parseInt(match[3], 10);
+            var check = new Date(Date.UTC(year, month - 1, day));
+            if (check.getUTCFullYear() !== year || check.getUTCMonth() !== month - 1 ||
+                    check.getUTCDate() !== day) {
+                return null;
+            }
+            return { year: year, month: month, day: day };
+        }
+
+        var parsed = new Date(text);
+        if (isNaN(parsed.getTime())) return null;
+        return { year: parsed.getFullYear(), month: parsed.getMonth() + 1, day: parsed.getDate() };
+    }
+
+    // Kalendar Hijrah tabular (algoritma Kuwaiti) — sandaran tanpa Intl.
+    // Tarikh Hijrah bermula pada 16 Julai 622 CE (JDN 1948440).
+    function gregorianToHijriTabular(value) {
+        var g = parseGregorianDate(value);
+        if (!g) return { year: 0, month: 0, day: 0 };
+
+        var a = Math.floor((14 - g.month) / 12);
+        var y = g.year + 4800 - a;
+        var m = g.month + 12 * a - 3;
+        var jdn = g.day + Math.floor((153 * m + 2) / 5) + 365 * y +
+                  Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+
+        var l = jdn - 1948440 + 10632;
+        var n = Math.floor((l - 1) / 10631);
+        l = l - 10631 * n + 354;
+        var j = Math.floor((10985 - l) / 5316) * Math.floor((50 * l) / 17719) +
+                Math.floor(l / 5670) * Math.floor((43 * l) / 15238);
+        l = l - Math.floor((30 - j) / 15) * Math.floor((17719 * j) / 50) -
+            Math.floor(j / 16) * Math.floor((15238 * j) / 43) + 29;
+        var hijriMonth = Math.floor((24 * l) / 709);
+        var hijriDay = l - Math.floor((709 * hijriMonth) / 24);
+        var hijriYear = 30 * n + j - 30;
+
+        if (hijriYear < 1 || hijriMonth < 1 || hijriMonth > 12 ||
+                hijriDay < 1 || hijriDay > 30) {
+            return { year: 0, month: 0, day: 0 };
+        }
+        return { year: hijriYear, month: hijriMonth, day: hijriDay };
+    }
+
+    // Tukar tarikh Gregorian ('YYYY-MM-DD' atau Date) kepada Hijri.
+    function gregorianToHijri(value) {
+        var g = parseGregorianDate(value);
+        if (!g) return { year: 0, month: 0, day: 0 };
+
+        var formatter = getHijriFormatter();
+        if (formatter) {
+            try {
+                var parts = formatter.formatToParts(new Date(Date.UTC(g.year, g.month - 1, g.day, 12)));
+                var found = {};
+                parts.forEach(function (part) {
+                    if (part.type !== 'literal') found[part.type] = part.value;
+                });
+                var year = parseInt(found.year, 10);
+                var month = parseInt(found.month, 10);
+                var day = parseInt(found.day, 10);
+                if (year > 0 && month >= 1 && month <= 12 && day >= 1 && day <= 30) {
+                    return { year: year, month: month, day: day };
+                }
+            } catch (error) {
+                // jatuh ke kaedah aritmetik di bawah
+            }
+        }
+
+        return gregorianToHijriTabular(g.year + '-' +
+            String(g.month).padStart(2, '0') + '-' + String(g.day).padStart(2, '0'));
+    }
+
+    // Format tarikh Hijri dalam Bahasa Melayu, cth. "16 Jamadilawal 1448H".
+    function formatHijriDate(value) {
+        var hijri = gregorianToHijri(value);
+        if (!hijri.year) return '';
+        var monthName = HIJRI_MONTHS_MS[hijri.month - 1] || '';
+        return hijri.day + ' ' + monthName + ' ' + hijri.year + 'H';
+    }
+
+    // Dapatkan nama bulan Hijri (untuk penapis)
+    function getHijriMonthName(monthNum) {
+        return HIJRI_MONTHS_MS[monthNum - 1] || '';
+    }
+
     return {
         MONTHS_EN: MONTHS_EN,
         MONTHS_MS: MONTHS_MS,
+        HIJRI_MONTHS_MS: HIJRI_MONTHS_MS,
         monthIndex: monthIndex,
         monthLabel: monthLabel,
         monthKey: monthKey,
@@ -229,6 +367,10 @@
         nextPaymentId: nextPaymentId,
         createMonthRecord: createMonthRecord,
         mostRecentMonthKey: mostRecentMonthKey,
-        calculateZakat: calculateZakat
+        calculateZakat: calculateZakat,
+        gregorianToHijri: gregorianToHijri,
+        gregorianToHijriTabular: gregorianToHijriTabular,
+        formatHijriDate: formatHijriDate,
+        getHijriMonthName: getHijriMonthName
     };
 });
