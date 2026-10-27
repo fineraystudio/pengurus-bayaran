@@ -21,6 +21,13 @@ Eksport dan import fail JSON membolehkan anda membuat salinan sandaran atau berp
 - **Ringan** — satu halaman, tiada rangka kerja, tiada penjejak.
 - **Privasi jelas** — [Dasar privasi](privasi.html) dalam Bahasa Melayu; tiada akaun, kuki atau analitik.
 
+## Di mana ia hidup
+
+- Apl: <https://fineraystudio.github.io/pengurus-bayaran/>
+- Dasar privasi: <https://fineraystudio.github.io/pengurus-bayaran/privasi.html>
+- Halaman senarai: <https://fineraystudio.github.io/tools-site/pengurus-bayaran/>
+- Repo: <https://github.com/fineraystudio/pengurus-bayaran>
+
 ## Jalankan secara tempatan
 
 ```sh
@@ -35,6 +42,7 @@ Service worker hanya berdaftar melalui `http://` atau `https://` (bukan `file://
 ```sh
 node --test test/lib.test.js   # ujian unit lib.js
 node test/e2e.mjs              # ujian hujung-ke-hujung dalam Chrome headless
+node test/live.mjs             # ujian salinan hidup di GitHub Pages
 ```
 
 Ujian unit meliputi logik data dalam `lib.js` (format RM, tapisan, susunan, ringkasan, salinan
@@ -46,6 +54,11 @@ Langkah "Package" menambah semakan meta SEO/JSON-LD, halaman privasi, `robots.tx
 ujian localStorage (tulis, muat semula, padam); serta ujian pemasangan PWA pada skrin mudah alih
 (390×844) — saiz ikon sebenar, `display: standalone`, `start_url` dalam skop, tiada limpahan mendatar,
 dan penilaian kebolehpasanan Chrome sendiri (`Page.getInstallabilityErrors`).
+
+`test/live.mjs` menyemak salinan yang benar-benar dihoskan: halaman dimuat dalam Bahasa Melayu,
+tambah bayaran dan data kekal selepas muat semula, kalkulator Zakat, service worker aktif, PWA boleh
+dipasang, tiada limpahan mendatar pada 390px, halaman senarai tools-site dan butang "Buka aplikasi",
+serta tiada ralat konsol. Jalankan dengan `LIVE_URL=... TOOLS_URL=... node test/live.mjs`.
 
 Penukaran tarikh Hijrah menggunakan kalendar Umm al-Qura melalui `Intl` (dengan sandaran aritmetik
 tabular jika `Intl` tiada). Tarikh rasmi Malaysia (JAKIM) ditentukan melalui rukyah, jadi ia boleh
