@@ -1,7 +1,7 @@
 // Service worker — Pengurus Bayaran (PWA)
 // Berdasarkan "Payment Manager" daripada personal-efficiency-machine (Farid Rameli). MIT.
 
-const CACHE_NAME = 'pengurus-bayaran-v5';
+const CACHE_NAME = 'pengurus-bayaran-v6';
 const APP_SHELL = [
     './',
     './index.html',

@@ -12,7 +12,7 @@ Eksport dan import fail JSON membolehkan anda membuat salinan sandaran atau berp
 - **Bahasa Melayu sepenuhnya** — semua teks antara muka, nama bulan dan format tarikh.
 - **Ringgit Malaysia (RM)** — semua amaun dipaparkan dalam RM.
 - **Komitmen bulanan berulang** — bulan baharu menyalin sendiri semua bayaran jenis "Komitmen Bulanan".
-- **Kalkulator Zakat** — kira zakat 2.5% ke atas simpanan yang melebihi nisab RM 15,000.
+- **Kalkulator Zakat** — kira zakat 2.5% daripada jumlah simpanan apabila ia mencapai nisab RM 15,000 (nisab ialah ambang, bukan jumlah yang ditolak).
 - **Kalendar Hijrah** — tarikh Hijrah hari ini, pilihan memaparkan tarikh Hijrah bagi setiap bayaran,
   dan tapisan mengikut bulan Hijrah (Muharram hingga Zulhijjah).
 - **Tapis dan susun** — ikut jenis, status, tarikh, amaun atau nama.
